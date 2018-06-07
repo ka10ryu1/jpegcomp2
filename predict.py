@@ -20,6 +20,7 @@ import chainer.links as L
 from chainer.cuda import to_cpu
 
 from Lib.concat_3_images import concat3Images
+from Lib.network import JC_DDUU as JC
 import Tools.imgfunc as IMG
 import Tools.getfunc as GET
 import Tools.func as F
@@ -103,18 +104,12 @@ def predict(model, data, batch, org_shape, rate, gpu):
 
 def main(args):
     # jsonファイルから学習モデルのパラメータを取得する
-    p = ['network', 'unit', 'shape', 'layer_num',
-         'shuffle_rate', 'actfun1', 'actfun2']
-    net, unit, shape, layer, sr, af1, af2 = GET.jsonData(args.param, p)
+    p = ['unit', 'shape', 'shuffle_rate', 'actfun1', 'actfun2']
+    unit, shape, sr, af1, af2 = GET.jsonData(args.param, p)
     af1 = GET.actfun(af1)
     af2 = GET.actfun(af2)
     ch, size = shape[:2]
     # 学習モデルを生成する
-    if net == 0:
-        from Lib.network import JC_DDUU as JC
-    else:
-        from Lib.network2 import JC_UDUD as JC
-
     model = L.Classifier(
         JC(n_unit=unit, n_out=ch, rate=sr, actfun1=af1, actfun2=af2)
     )
