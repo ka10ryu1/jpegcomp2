@@ -22,8 +22,8 @@ def command():
                         help='生成される画像サイズ [default: 128 pixel]')
     parser.add_argument('-fs', '--font_size', type=int, default=32,
                         help='使用するフォントのサイズ [default: 32x32]')
-    parser.add_argument('-fn', '--font_num', type=int, default=25,
-                        help='フォント数 [default: 25]')
+    parser.add_argument('-fn', '--font_num', type=int, default=20,
+                        help='フォント数 [default: 20]')
     parser.add_argument('-in', '--img_num', type=int, default=1000,
                         help='画像生成数 [default: 1000]')
     parser.add_argument('-t', '--train_per_all', type=float, default=0.9,
@@ -83,7 +83,6 @@ def main(args):
 
     # フォント画像をフォントごとに分割する
     print('split images...')
-    h, w = fonts[0].shape[:2]
     fonts, _ = IMG.splitSQN(fonts, args.font_size)
 
     # 正解画像の生成
