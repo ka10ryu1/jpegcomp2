@@ -28,8 +28,8 @@ def command():
                         help='画像生成数 [default: 1000]')
     parser.add_argument('-t', '--train_per_all', type=float, default=0.9,
                         help='画像数に対する学習用画像の割合 [default: 0.9]')
-    parser.add_argument('-o', '--out_path', default='./result/',
-                        help='データセット保存先 (default: ./result/)')
+    parser.add_argument('-o', '--out_path', default='./dataset/',
+                        help='データセット保存先 (default: ./dataset/)')
     args = parser.parse_args()
     F.argsPrint(args)
     return args
@@ -87,12 +87,13 @@ def main(args):
 
     # 正解画像の生成
     print('create images...')
-    y = create(fonts, args.img_size, args.font_num, args.img_num)
     # 正解画像の保存
     max_folder = 4000
     print('save images...')
-    for i in range(0, len(y), max_folder):
-        [cv2.imwrite(getPath(args.out_path, i), j) for j in y[i:i+max_folder]]
+    for i in range(0, args.img_num, max_folder):
+        num = np.min([max_folder, args.img_num])
+        [cv2.imwrite(getPath(args.out_path, i), j)
+         for j in create(fonts, args.img_size, args.font_num, num)]
 
     print('save param...')
     F.dict2json(args.out_path, 'dataset', F.args2dict(args))
