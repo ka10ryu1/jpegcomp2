@@ -335,6 +335,20 @@ def rotateRN(imgs, num, level=[-10, 10], scale=1.2, border=(0, 0, 0)):
     return np.array(out_imgs), np.array(out_angle)
 
 
+def flipR(img):
+    """
+    入力画像をランダムに反転させる
+    [in]  反転させたい入力画像
+    [out] 反転させた入力画像
+    """
+
+    n = np.random.randint(0, 3)
+    if n == 2:
+        return img
+    else:
+        return cv2.flip(img, n)
+
+
 def flip(img, num=2):
     """
     画像を回転させてデータ数を水増しする
