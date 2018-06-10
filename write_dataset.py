@@ -25,7 +25,7 @@ def command():
     return args
 
 
-def writeTXT(folder, name, data):
+def writeTXT(path, data):
     """
     テキストファイルを書き出す
     [in] folder: テキストを保存するフォルダ
@@ -37,7 +37,7 @@ def writeTXT(folder, name, data):
     valN:  N番目の画像の分類番号
     """
 
-    with open(os.path.join(folder, name), 'w') as f:
+    with open(path, 'w') as f:
         [f.write('./' + i + ' ' + j + '\n') for i, j in data]
 
 
@@ -84,8 +84,12 @@ def main(args):
     train = data_arr[shuffle[:train_size]]
     test = data_arr[shuffle[train_size:]]
     # chainer.datasets.LabeledImageDataset形式で出力する
-    writeTXT(args.out_path, 'train_' + str(label_num).zfill(3) + '.txt', train)
-    writeTXT(args.out_path, 'test_' + str(label_num).zfill(3) + '.txt', test)
+    path = F.getFilePath(args.out_path, 'train_' +
+                         str(label_num).zfill(3), '.txt')
+    writeTXT(path, train)
+    path = F.getFilePath(args.out_path, 'test_' +
+                         str(label_num).zfill(3), '.txt')
+    writeTXT(path, test)
 
 
 if __name__ == '__main__':
