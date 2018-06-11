@@ -14,7 +14,7 @@ import Tools.func as F
 
 def command():
     parser = argparse.ArgumentParser(description=help)
-    parser.add_argument('-i', '--img_root_path', default='result/',
+    parser.add_argument('-i', '--img_root_path', default='dataset/',
                         help='テキストデータを作成したいデータセットのルートパス')
     parser.add_argument('-t', '--train_per_all', type=float, default=0.9,
                         help='画像数に対する学習用画像の割合 [default: 0.9]')
