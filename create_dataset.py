@@ -39,7 +39,7 @@ def rndChoice(imgs, num):
     return imgs[np.random.choice(range(imgs.shape[0]), num, replace=False)]
 
 
-def create(pre_fonts, img_size, font_num, img_num, img_buf=20, quality=5):
+def create(pre_fonts, img_size, font_num, img_num, img_buf=20):
     y = []
     size = (img_buf // 2, img_size + img_buf // 2)
     # 使用するフォントをランダムで事前に選択しておく
@@ -47,7 +47,7 @@ def create(pre_fonts, img_size, font_num, img_num, img_buf=20, quality=5):
     all_fonts = [rndChoice(pre_fonts, font_num) for i in range(img_num)]
     for fonts in all_fonts:
         # フォントをセットする背景の生成
-        img = IMG.blank((img_size + img_buf, img_size + img_buf, 3), 255)
+        img = IMG.white(img_size + img_buf, img_size + img_buf, 3)
         for font in fonts:
             # 上辺と左辺の枠を消してフォントを一つ選択する
             img, _ = IMG.paste(font[1:, 1:, ], img, mask_flg=False)
@@ -56,17 +56,6 @@ def create(pre_fonts, img_size, font_num, img_num, img_buf=20, quality=5):
         y.append(img[size[0]:size[1], size[0]:size[1]])
 
     return y
-
-
-def imread(path, ch):
-    if IMG.isImgPath(path):
-        print('imread:\t', path)
-        x = cv2.imread(path, IMG.getCh(ch))
-    else:
-        print('[ERROR] color image not found:', path)
-        exit()
-
-    return x
 
 
 def getPath(out_path, i, zfill=6, str_len=12):
@@ -79,7 +68,7 @@ def main(args):
 
     # フォント画像の読み込み
     print('read images...')
-    fonts = [imread(font, 3) for font in args.font]
+    fonts = IMG.readN(args.font, 3)
 
     # フォント画像をフォントごとに分割する
     print('split images...')

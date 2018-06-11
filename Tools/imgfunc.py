@@ -36,11 +36,59 @@ def getCh(ch):
         return cv2.IMREAD_UNCHANGED
 
 
+def read(path, ch):
+    """
+    画像の有無を確認して読み込む
+    ※基本的にはreadN()と同じなので省略
+    """
+
+    logger.debug('read({},{})'.format(path, ch))
+    if isImgPath(path):
+        logger.debug('imread:\t{}'.format(path))
+        return cv2.imread(path, getCh(ch))
+    else:
+        logger.error('image not found:\t{}'.format(path))
+        exit()
+
+
+def readN(path_list, ch):
+    """
+    画像の有無を確認して読み込む
+    [in]  path: 画像のパス
+    [in]  ch:   画像のチャンネル
+    [out] 読み込んだ画像
+    """
+    return [readN(path, ch) for path in path_list]
+
+
 def write(folder, name, img, ext='.jpg'):
+    """
+    画像に逐次連番を追加して保存する
+    [in] folder: 保存するフォルダ
+    [in] name:   保存するファイル名
+    [in] img:    保存する画像
+    [in] ext:    拡張子
+    """
+    logger.debug('write({},{},{},{})'.format(folder, name, img.shape, ext))
     write.__dict__.setdefault('count', 0)
     path = getFilePath(folder, name+str(write.count).zfill(4), ext)
     cv2.imwrite(path, img)
     write.count += 1
+    logger.debug('\t count: {}'.format(write.count))
+
+
+def white(w, h, ch):
+    """
+    単色（白）を生成する
+    """
+    return blank((w, h, ch), 255)
+
+
+def black(w, h, ch):
+    """
+    単色（黒）を生成する
+    """
+    return blank((w, h, ch), 0)
 
 
 def blank(size, color, dtype=np.uint8, min_val=0, max_val=255):
@@ -100,7 +148,6 @@ def isImgPath(path, silent=False):
     """
 
     logger.debug('isImgPath({},{})'.format(path, silent))
-
     if not type(path) is str:
         return False
 
@@ -610,7 +657,7 @@ def arrNx(arr, rate, flg=cv2.INTER_NEAREST):
     [out] N倍にされた行列
     """
 
-    #logger.debug('arrNx({},{},{})'.format(arr.shape, rate, flg))
+    # logger.debug('arrNx({},{},{})'.format(arr.shape, rate, flg))
     if(len(arr.shape) == 3):
         img = arr2img(arr)
         return img2arr(resize(img, rate, flg))
