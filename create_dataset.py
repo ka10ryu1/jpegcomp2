@@ -28,8 +28,8 @@ def command():
                         help='生成される画像サイズ [default: 128 pixel]')
     parser.add_argument('-fs', '--font_size', type=int, default=32,
                         help='使用するフォントのサイズ [default: 32x32]')
-    parser.add_argument('-fn', '--font_num', type=int, default=20,
-                        help='フォント数 [default: 20]')
+    parser.add_argument('-fn', '--font_num', type=int, default=16,
+                        help='フォント数 [default: 16]')
     parser.add_argument('-in', '--img_num', type=int, default=1000,
                         help='画像生成数 [default: 1000]')
     parser.add_argument('-o', '--out_path', default='./dataset/',
@@ -43,13 +43,16 @@ def rndChoice(imgs, num):
     return imgs[np.random.choice(range(imgs.shape[0]), num, replace=False)]
 
 
+def rndChoiceN(imgs, font_num, img_num):
+    return [rndChoice(imgs, font_num) for i in range(img_num)]
+
+
 def create(pre_fonts, img_size, font_num, img_num, img_buf=20):
     y = []
     size = (img_buf // 2, img_size + img_buf // 2)
     # 使用するフォントをランダムで事前に選択しておく
     # np.random.choiceはかなりコストの大きい処理なので注意
-    all_fonts = [rndChoice(pre_fonts, font_num) for i in range(img_num)]
-    for fonts in all_fonts:
+    for fonts in rndChoiceN(pre_fonts, font_num, img_num):
         # フォントをセットする背景の生成
         img = IMG.white(img_size + img_buf, img_size + img_buf, 3)
         for font in fonts:
