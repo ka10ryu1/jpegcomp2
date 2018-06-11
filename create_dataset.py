@@ -32,8 +32,6 @@ def command():
                         help='フォント数 [default: 20]')
     parser.add_argument('-in', '--img_num', type=int, default=1000,
                         help='画像生成数 [default: 1000]')
-    parser.add_argument('-t', '--train_per_all', type=float, default=0.9,
-                        help='画像数に対する学習用画像の割合 [default: 0.9]')
     parser.add_argument('-o', '--out_path', default='./dataset/',
                         help='データセット保存先 (default: ./dataset/)')
     args = parser.parse_args()
