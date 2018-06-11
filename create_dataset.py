@@ -65,7 +65,7 @@ def create(pre_fonts, img_size, font_num, img_num, img_buf=20):
     return y
 
 
-def getPath(out_path, i, zfill=6, str_len=12):
+def getPath(out_path, i, zfill=4, str_len=12):
     folder = os.path.join(out_path, str(i).zfill(zfill))
     name = GET.datetimeSHA(GET.randomStr(10), str_len=str_len)
     return F.getFilePath(folder, name, '.jpg')
@@ -86,7 +86,7 @@ def main(args):
     print('create and save images...')
     for i in range(0, args.img_num, max_folder):
         num = np.min([max_folder, args.img_num])
-        [cv2.imwrite(getPath(args.out_path, i), j)
+        [cv2.imwrite(getPath(args.out_path, i//max_folder), j)
          for j in create(fonts, args.img_size, args.font_num, num)]
 
     print('save param...')
