@@ -58,7 +58,8 @@ def readN(path_list, ch):
     [in]  ch:   画像のチャンネル
     [out] 読み込んだ画像
     """
-    return [readN(path, ch) for path in path_list]
+    logger.debug('imreadN:\t{}'.format(path_list))
+    return [read(path, ch) for path in path_list]
 
 
 def write(folder, name, img, ext='.jpg'):
