@@ -80,11 +80,9 @@ def main(args):
     print('split images...')
     fonts, _ = IMG.splitSQN(fonts, args.font_size)
 
-    # 正解画像の生成
-    print('create images...')
-    # 正解画像の保存
+    # 正解画像の生成と保存
     max_folder = 4000
-    print('save images...')
+    print('create and save images...')
     for i in range(0, args.img_num, max_folder):
         num = np.min([max_folder, args.img_num])
         [cv2.imwrite(getPath(args.out_path, i), j)
