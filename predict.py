@@ -113,7 +113,6 @@ def main(args):
     model = L.Classifier(
         JC(n_unit=unit, n_out=ch, rate=sr, actfun1=af1, actfun2=af2)
     )
-
     # load_npzのpath情報を取得し、学習済みモデルを読み込む
     load_path = F.checkModelType(args.model)
     try:
