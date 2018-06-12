@@ -16,6 +16,8 @@ import time
 import argparse
 import numpy as np
 
+from multiprocessing import Pool
+
 import Tools.imgfunc as IMG
 import Tools.getfunc as GET
 import Tools.func as F
@@ -40,29 +42,51 @@ def command():
 
 
 def rndChoice(imgs, num):
+    # np.random.choiceはかなりコストの大きい処理なので注意
     return imgs[np.random.choice(range(imgs.shape[0]), num, replace=False)]
 
 
+def w_choice(args):
+    return rndChoice(*args)
+
+
 def rndChoiceN(imgs, font_num, img_num):
-    return [rndChoice(imgs, font_num) for i in range(img_num)]
+    param = [(imgs, font_num) for i in range(img_num)]
+    p = Pool(processes=4)
+    out = p.map(w_choice, param)
+    p.close()
+    return out
+
+
+def paste(fonts, img, size):
+    for font in fonts:
+        # 上辺と左辺の枠を消してフォントを一つ選択する
+        img, _ = IMG.paste(font[1:, 1:, ], img, mask_flg=False)
+
+    return img[size[0]:size[1], size[0]:size[1]]
+
+
+def w_paste(args):
+    return paste(*args)
+
+
+def pasteN(all_fonts, img_size, img_buf, size):
+    # 背景画像を生成する
+    img = IMG.white(img_size + img_buf, img_size + img_buf, 3)
+    param = [(fonts, img, size) for fonts in all_fonts]
+    p = Pool(processes=4)
+    # 背景画像にフォントを貼り付けてデータを生成する
+    out = p.map(w_paste, param)
+    p.close()
+    return out
 
 
 def create(pre_fonts, img_size, font_num, img_num, img_buf=20):
-    y = []
     size = (img_buf // 2, img_size + img_buf // 2)
     # 使用するフォントをランダムで事前に選択しておく
-    # np.random.choiceはかなりコストの大きい処理なので注意
-    for fonts in rndChoiceN(pre_fonts, font_num, img_num):
-        # フォントをセットする背景の生成
-        img = IMG.white(img_size + img_buf, img_size + img_buf, 3)
-        for font in fonts:
-            # 上辺と左辺の枠を消してフォントを一つ選択する
-            img, _ = IMG.paste(font[1:, 1:, ], img, mask_flg=False)
-
-        # 画像の端を除去し、グレースケールに変換
-        y.append(img[size[0]:size[1], size[0]:size[1]])
-
-    return y
+    choice = rndChoiceN(pre_fonts, font_num, img_num)
+    # 選択したフォントを利用してデータを生成する
+    return pasteN(choice, img_size, img_buf, size)
 
 
 def getPath(out_path, i, zfill=4, str_len=12):
