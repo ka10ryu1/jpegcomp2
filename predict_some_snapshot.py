@@ -21,6 +21,7 @@ import Tools.imgfunc as IMG
 import Tools.getfunc as GET
 import Tools.func as F
 from predict import encDecWrite, predict
+from Lib.network import JC_DDUU as JC
 
 
 def command():
@@ -97,7 +98,6 @@ def getImage(jpg_path, ch, img_size, img_num, seed):
 
     # ランダムに取得する
     shuffle = np.random.permutation(range(len(imgs)))
-
     return np.vstack(imgs[shuffle[:img_num]])
 
 
@@ -120,25 +120,20 @@ def main(args):
     # スナップショットとモデルパラメータのパスを取得する
     snapshot_path, param = getSnapshotAndParam(args.snapshot_and_json)
     # jsonファイルから学習モデルのパラメータを取得する
-    p = ['network', 'unit', 'shape', 'layer_num',
-         'shuffle_rate', 'actfun1', 'actfun2']
-    net, unit, shape, layer, sr, af1, af2 = GET.jsonData(param, p)
+    p = ['unit', 'shape', 'shuffle_rate', 'actfun1', 'actfun2']
+    unit, shape, sr, af1, af2 = GET.jsonData(param, p)
     af1 = GET.actfun(af1)
     af2 = GET.actfun(af2)
     ch, size = shape[:2]
     # 推論実行するために画像を読み込んで結合する
     img = getImage(args.jpeg, ch, size, args.img_num, args.random_seed)
     # 学習モデルを生成する
-    if net == 0:
-        from Lib.network import JC_DDUU as JC
-    else:
-        from Lib.network2 import JC_UDUD as JC
-
     model = L.Classifier(
-        JC(n_unit=unit, n_out=1, layer=layer, rate=sr, actfun1=af1, actfun2=af2)
+        JC(n_unit=unit, n_out=ch, rate=sr, actfun1=af1, actfun2=af2)
     )
     out_imgs = [img]
     for s in snapshot_path:
+        print(s)
         # load_npzのpath情報を取得する
         load_path = F.checkModelType(s)
         # 学習済みモデルの読み込み
