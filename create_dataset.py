@@ -72,14 +72,13 @@ def getPath(out_path, i, zfill=4, str_len=12):
 
 
 def main(args):
+    # フォント画像の読み込みと分割する
+    print('read and split images...')
+    fonts, _ = IMG.splitSQN(IMG.readN(args.font, 3), args.font_size)
 
-    # フォント画像の読み込み
-    print('read images...')
-    fonts = IMG.readN(args.font, 3)
-
-    # フォント画像をフォントごとに分割する
-    print('split images...')
-    fonts, _ = IMG.splitSQN(fonts, args.font_size)
+    print(fonts.shape)
+    param = F.args2dict(args)
+    param['shape'] = fonts.shape
 
     # 正解画像の生成と保存
     max_folder = 4000
@@ -90,7 +89,7 @@ def main(args):
          for j in create(fonts, args.img_size, args.font_num, num)]
 
     print('save param...')
-    F.dict2json(args.out_path, 'dataset', F.args2dict(args))
+    F.dict2json(args.out_path, 'dataset', param)
 
 
 if __name__ == '__main__':
