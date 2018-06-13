@@ -140,6 +140,14 @@ def blank(size, color, dtype=np.uint8, min_val=0, max_val=255):
     return img
 
 
+def cleary(img, clip_limit=3, grid=(8, 8), thresh=225):
+    clahe = cv2.createCLAHE(clipLimit=clip_limit, tileGridSize=grid)
+    dst = clahe.apply(img)
+    th = dst.copy()
+    th[dst > thresh] = 255
+    return th
+
+
 def isImgPath(path, silent=False):
     """
     入力されたパスが画像か判定する

@@ -99,7 +99,8 @@ def predict(model, data, batch, org_shape, rate, gpu):
     # 出力画像は入力画像の2倍の大きさになっているので半分に縮小する
     img = IMG.resize(img, 1/rate)
     # 結合しただけでは画像サイズがオリジナルと異なるので切り取る
-    return img[:org_shape[0], :org_shape[1]]
+    # また、画像の明暗をはっきりさせる
+    return IMG.cleary(img[:org_shape[0], :org_shape[1]])
 
 
 def main(args):
