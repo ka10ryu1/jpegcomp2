@@ -41,24 +41,7 @@ def command():
     return args
 
 
-def rndChoice(imgs, num):
-    # np.random.choiceはかなりコストの大きい処理なので注意
-    return imgs[np.random.choice(range(imgs.shape[0]), num, replace=False)]
-
-
-def w_choice(args):
-    return rndChoice(*args)
-
-
-def rndChoiceN(imgs, font_num, img_num):
-    param = [(imgs, font_num) for i in range(img_num)]
-    p = Pool(processes=4)
-    out = p.map(w_choice, param)
-    p.close()
-    return out
-
-
-def paste(fonts, img, size):
+def create(fonts, img, size):
     for font in fonts:
         # 上辺と左辺の枠を消してフォントを一つ選択する
         img, _ = IMG.paste(font[1:, 1:, ], img, mask_flg=False)
@@ -66,27 +49,36 @@ def paste(fonts, img, size):
     return img[size[0]:size[1], size[0]:size[1]]
 
 
-def w_paste(args):
-    return paste(*args)
+def w_create(args):
+    return create(*args)
 
 
-def pasteN(all_fonts, img_size, img_buf, size):
+def createN(pre_fonts, img_size, font_num, img_num, img_buf=20, processes=4):
+    #####
+    # フォント画像と背景画像の準備
+    #####
+
     # 背景画像を生成する
     img = IMG.white(img_size + img_buf, img_size + img_buf, 3)
-    param = [(fonts, img, size) for fonts in all_fonts]
-    p = Pool(processes=4)
-    # 背景画像にフォントを貼り付けてデータを生成する
-    out = p.map(w_paste, param)
+    # img_bufで拡張した背景画像をimg_sizeの幅で切り取るために使用する
+    size = (img_buf // 2, img_size + img_buf // 2)
+    # 使用するフォントをランダムシャッフルしておく
+    fonts = np.array(pre_fonts)
+    fonts = fonts[np.random.permutation(range(len(pre_fonts)))]
+
+    #####
+    # ここからマルチプロセス処理
+    #####
+
+    # ラッパー関数用に引数をリストで格納する
+    param = [(fonts[i:i+font_num], img, size)
+             for i in range(0, len(fonts), font_num)][:img_num]
+    # 使用するプロセス数を指定し、実行し、クローズする
+    p = Pool(processes=processes)
+    #out = p.map(w_create, param)
+    out = p.imap_unordered(w_create, param)
     p.close()
     return out
-
-
-def create(pre_fonts, img_size, font_num, img_num, img_buf=20):
-    size = (img_buf // 2, img_size + img_buf // 2)
-    # 使用するフォントをランダムで事前に選択しておく
-    choice = rndChoiceN(pre_fonts, font_num, img_num)
-    # 選択したフォントを利用してデータを生成する
-    return pasteN(choice, img_size, img_buf, size)
 
 
 def getPath(out_path, i, zfill=4, str_len=12):
@@ -106,11 +98,12 @@ def main(args):
 
     # 正解画像の生成と保存
     max_folder = 4000
+    proc = 7
     print('create and save images...')
     for i in range(0, args.img_num, max_folder):
-        num = np.min([max_folder, args.img_num])
+        num = np.min([max_folder, args.img_num-i])
         [cv2.imwrite(getPath(args.out_path, i//max_folder), j)
-         for j in create(fonts, args.img_size, args.font_num, num)]
+         for j in createN(fonts, args.img_size, args.font_num, num, processes=proc)]
 
     print('save param...')
     F.dict2json(args.out_path, 'dataset', param)
