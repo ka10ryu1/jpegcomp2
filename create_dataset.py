@@ -75,7 +75,6 @@ def createN(pre_fonts, img_size, font_num, img_num, img_buf=20, processes=4):
              for i in range(0, len(fonts), font_num)][:img_num]
     # 使用するプロセス数を指定し、実行し、クローズする
     p = Pool(processes=processes)
-    #out = p.map(w_create, param)
     out = p.imap_unordered(w_create, param)
     p.close()
     return out
