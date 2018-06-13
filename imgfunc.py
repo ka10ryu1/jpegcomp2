@@ -154,13 +154,17 @@ def isImgPath(path, silent=False):
 
     import imghdr
     if not os.path.isfile(path):
-        logger.error('image not found: {}'.format(path))
-        logger.error(fileFuncLine())
+        if not silent:
+            logger.error('image not found: {}'.format(path))
+            logger.error(fileFuncLine())
+
         return False
 
     if imghdr.what(path) is None:
-        logger.error('image not found: {}'.format(path))
-        logger.error(fileFuncLine())
+        if not silent:
+            logger.error('image not found: {}'.format(path))
+            logger.error(fileFuncLine())
+
         return False
     else:
         return True
