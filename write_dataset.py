@@ -76,7 +76,7 @@ def main(args):
             'test': data_arr[shuffle[train_size:]]}
 
     for key, val in data.items():
-        print(key)
+        print(key, val.shape)
         print(val)
 
         # chainer.datasets.LabeledImageDataset形式で出力する
