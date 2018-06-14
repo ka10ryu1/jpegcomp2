@@ -15,7 +15,7 @@ import chainer.functions as F
 import chainer.optimizers as O
 
 [sys.path.append(d) for d in ['./Tools/', '../Tools/'] if os.path.isdir(d)]
-from func import fileFuncLine
+from func import fileFuncLine, getPythonVer
 from logging import getLogger
 logger = getLogger(__name__)
 
@@ -30,9 +30,15 @@ def randomStr(choice_len):
     import random
     import string
 
-    # return random.choices(string.ascii_letters, k=choice_len) # < Python 3.6+
-    return ''.join([random.choice(string.ascii_letters)
-                    for _ in range(choice_len)])  # < Python 3.5
+    # Pythonのバージョンを取得
+    ver = getPythonVer()
+    if ver >= 3.6:
+        # < Python 3.6+
+        return ''.join(random.choices(string.ascii_letters, k=choice_len))
+    else:
+        # < Python 3.5
+        return ''.join([random.choice(string.ascii_letters)
+                        for _ in range(choice_len)])
 
 
 def datetime32():

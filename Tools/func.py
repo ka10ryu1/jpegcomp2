@@ -11,6 +11,11 @@ from logging import getLogger
 logger = getLogger(__name__)
 
 
+def getPythonVer():
+    import sys
+    return sys.version_info.major + sys.version_info.minor/10
+
+
 def argsPrint(p, bar=30):
     """
     argparseのparse_args() で生成されたオブジェクトを入力すると、
