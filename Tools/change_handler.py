@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*-coding: utf-8 -*-
 #
-help = '便利機能'
+help = 'ファイルの更新を監視する'
 #
 
 import os
