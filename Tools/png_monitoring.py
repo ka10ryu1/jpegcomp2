@@ -9,7 +9,7 @@ import time
 import argparse
 import shutil
 
-from func import ChangeHandler
+from change_handler import ChangeHandler
 from watchdog.observers import Observer
 
 
