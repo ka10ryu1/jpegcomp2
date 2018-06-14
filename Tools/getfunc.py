@@ -21,6 +21,12 @@ logger = getLogger(__name__)
 
 
 def randomStr(choice_len):
+    """
+    入力された長さのランダム文字列を返す
+    [in]  choice_len:生成したいランダム文字列の長さ
+    [out] 生成されたランダム文字列
+    """
+
     import random
     import string
 
@@ -152,6 +158,13 @@ def optimizer(opt_str):
 
 
 def jsonData(path, data):
+    """
+    入力されたjsonのパスからjsonを読み込み、取得したいdataの値を返す
+    [in]  path:読み込みたいjsonファイルのパス
+    [in]  data:読み込みたいデータの名称リスト
+    [out] param: 取得した値
+    """
+
     logger.debug('json read: {}'.format(path))
     try:
         with open(path, 'r') as f:
@@ -176,6 +189,10 @@ def jsonData(path, data):
 
 def modelParam(path):
     """
+
+    この関数は将来的に削除予定。
+    同様の機能がjsonData()にあるのでそちらを利用すること。
+
     jsonで記述されたモデルパラメータ情報を読み込む
     [in]  path:              jsonファイルのパス
     [out] d['network']:      ネットワークの種類

@@ -36,7 +36,7 @@ def getCh(ch):
         return cv2.IMREAD_UNCHANGED
 
 
-def read(path, ch):
+def read(path, ch=3):
     """
     画像の有無を確認して読み込む
     ※基本的にはreadN()と同じなので省略
@@ -47,11 +47,10 @@ def read(path, ch):
         logger.debug('imread:\t{}'.format(path))
         return cv2.imread(path, getCh(ch))
     else:
-        logger.error('image not found:\t{}'.format(path))
-        exit()
+        return None
 
 
-def readN(path_list, ch):
+def readN(path_list, ch=3):
     """
     画像の有無を確認して読み込む
     [in]  path: 画像のパス
@@ -59,7 +58,7 @@ def readN(path_list, ch):
     [out] 読み込んだ画像
     """
     logger.debug('imreadN:\t{}'.format(path_list))
-    return [read(path, ch) for path in path_list]
+    return [read(path, ch) for path in path_list if isImgPath(path)]
 
 
 def write(folder, name, img, ext='.jpg'):
@@ -387,20 +386,6 @@ def rotateRN(imgs, num, level=[-10, 10], scale=1.2, border=(0, 0, 0)):
     return np.array(out_imgs), np.array(out_angle)
 
 
-def flipR(img):
-    """
-    入力画像をランダムに反転させる
-    [in]  反転させたい入力画像
-    [out] 反転させた入力画像
-    """
-
-    n = np.random.randint(0, 3)
-    if n == 2:
-        return img
-    else:
-        return cv2.flip(img, n)
-
-
 def flip(img, num=2):
     """
     画像を回転させてデータ数を水増しする
@@ -432,6 +417,20 @@ def flip(img, num=2):
         out_imgs.append(f)
 
     return out_imgs
+
+
+def flipR(img):
+    """
+    入力画像をランダムに反転させる
+    [in]  反転させたい入力画像
+    [out] 反転させた入力画像
+    """
+
+    n = np.random.randint(0, 3)
+    if n == 2:
+        return img
+    else:
+        return cv2.flip(img, n)
 
 
 def flipN(imgs, num=2):
