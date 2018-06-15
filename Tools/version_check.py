@@ -12,63 +12,16 @@ from func import getPythonVer
 
 
 def main():
-    py = 'Python'
-    cv = 'OpenCV'
-    np = 'Numpy'
-    ch = 'Chainer'
-    cp = 'Cupy'
-    idp = 'iDeep'
-    mpl = 'Matplotlib'
-    pil = 'Pillow'
 
-    ver = {py: None, cv: None, np: None, ch: None,
-           cp: None, idp: None, mpl: None, pil: None}
+    import pkg_resources as pkg
+    check = ('Python', 'pip', 'numpy', 'opencv-python',
+             'chainer', 'cupy', 'ideep4py', 'matplotlib', 'Pillow')
+    ver = {dist.project_name: dist.version
+           for dist in pkg.working_set if dist.project_name in check}
 
-    ver[py] = getPythonVer()
-
-    try:
-        import cv2
-        ver[cv] = cv2.__version__
-    except:
-        pass
-
-    try:
-        import numpy
-        ver[np] = numpy.__version__
-    except:
-        pass
-
-    try:
-        import chainer
-        ver[ch] = chainer.__version__
-    except:
-        pass
-
-    try:
-        import cupy
-        ver[cp] = cupy.__version__
-    except:
-        pass
-
-    try:
-        import ideep4py
-        ver[idp] = '1.0.4'  # ideep4py.__version__
-    except:
-        pass
-
-    try:
-        import matplotlib
-        ver[mpl] = matplotlib.__version__
-    except:
-        pass
-
-    try:
-        import PIL
-        ver[pil] = PIL.__version__
-    except:
-        pass
-
-    [print('- **{}** {}'.format(key, val)) for key, val in ver.items()]
+    [ver.update({i: None}) for i in check if ver.get(i) is None]
+    ver['Python'] = getPythonVer()
+    [print('- **{}** {}'.format(key, ver[key])) for key in check]
 
 
 if __name__ == '__main__':
