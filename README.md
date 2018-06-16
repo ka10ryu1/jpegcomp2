@@ -26,13 +26,14 @@
 
 ## $ Tools/version_check.py
 
-- **Numpy** 1.14.2
-- **OpenCV** 3.4.0
-- **iDeep** None
-- **Cupy** 4.0.0
 - **Python** 3.5
-- **Matplotlib** 2.2.2
-- **Chainer** 4.0.0
+- **pip** 9.0.1
+- **numpy** 1.14.2
+- **opencv-python** 3.4.0.12
+- **chainer** 4.0.0
+- **cupy** 4.0.0
+- **ideep4py** None
+- **matplotlib** 2.2.2
 - **Pillow** 5.1.0
 
 # ファイル構成
