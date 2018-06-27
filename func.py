@@ -7,33 +7,13 @@ help = '便利機能'
 import os
 import inspect
 from pathlib import Path
-from watchdog.events import FileSystemEventHandler
 from logging import getLogger
 logger = getLogger(__name__)
 
 
-class ChangeHandler(FileSystemEventHandler):
-
-    def __init__(self):
-        pass
-
-    def on_created(self, event):
-        filepath = event.src_path
-        filename = os.path.basename(filepath)
-        _, ext = os.path.splitext(filename)
-        return filepath, filename, ext
-
-    def on_modified(self, event):
-        filepath = event.src_path
-        filename = os.path.basename(filepath)
-        _, ext = os.path.splitext(filename)
-        return filepath, filename, ext
-
-    def on_deleted(self, event):
-        filepath = event.src_path
-        filename = os.path.basename(filepath)
-        _, ext = os.path.splitext(filename)
-        return filepath, filename, ext
+def getPythonVer():
+    import sys
+    return sys.version_info.major + sys.version_info.minor/10
 
 
 def argsPrint(p, bar=30):

@@ -15,18 +15,30 @@ import chainer.functions as F
 import chainer.optimizers as O
 
 [sys.path.append(d) for d in ['./Tools/', '../Tools/'] if os.path.isdir(d)]
-from func import fileFuncLine
+from func import fileFuncLine, getPythonVer
 from logging import getLogger
 logger = getLogger(__name__)
 
 
 def randomStr(choice_len):
+    """
+    入力された長さのランダム文字列を返す
+    [in]  choice_len:生成したいランダム文字列の長さ
+    [out] 生成されたランダム文字列
+    """
+
     import random
     import string
 
-    # return random.choices(string.ascii_letters, k=choice_len) # < Python 3.6+
-    return ''.join([random.choice(string.ascii_letters)
-                    for _ in range(choice_len)])  # < Python 3.5
+    # Pythonのバージョンを取得
+    ver = getPythonVer()
+    if ver >= 3.6:
+        # < Python 3.6+
+        return ''.join(random.choices(string.ascii_letters, k=choice_len))
+    else:
+        # < Python 3.5
+        return ''.join([random.choice(string.ascii_letters)
+                        for _ in range(choice_len)])
 
 
 def datetime32():
@@ -152,6 +164,13 @@ def optimizer(opt_str):
 
 
 def jsonData(path, data):
+    """
+    入力されたjsonのパスからjsonを読み込み、取得したいdataの値を返す
+    [in]  path:読み込みたいjsonファイルのパス
+    [in]  data:読み込みたいデータの名称リスト
+    [out] param: 取得した値
+    """
+
     logger.debug('json read: {}'.format(path))
     try:
         with open(path, 'r') as f:
@@ -176,6 +195,10 @@ def jsonData(path, data):
 
 def modelParam(path):
     """
+
+    この関数は将来的に削除予定。
+    同様の機能がjsonData()にあるのでそちらを利用すること。
+
     jsonで記述されたモデルパラメータ情報を読み込む
     [in]  path:              jsonファイルのパス
     [out] d['network']:      ネットワークの種類

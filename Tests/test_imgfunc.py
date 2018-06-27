@@ -31,6 +31,24 @@ class TestImgFunc(unittest.TestCase):
         self.assertEqual(IMG.getCh(4), cv2.IMREAD_UNCHANGED)
         self.assertEqual(IMG.getCh(2.5), cv2.IMREAD_UNCHANGED)
 
+    def test_read(self):
+        self.assertEqual(IMG.read(lenna_path).shape, (256, 256, 3))
+        self.assertEqual(IMG.read(lenna_path, 0).shape, (256, 256, 3))
+        self.assertEqual(IMG.read(lenna_path, 1).shape, (256, 256))
+        self.assertEqual(IMG.read(lenna_path, 2).shape, (256, 256, 3))
+        self.assertEqual(IMG.read(lenna_path, 3).shape, (256, 256, 3))
+        self.assertEqual(IMG.read(lenna_path, 9).shape, (256, 256, 3))
+        uso = './testetes.jpg'
+        self.assertEqual(IMG.read('./testetes.jpg'), None)
+
+        path = [lenna_path, mandrill_path, lenna_path,
+                mandrill_path, lenna_path, mandrill_path]
+        self.assertEqual(np.array(IMG.readN(path)).shape, (6, 256, 256, 3))
+        self.assertEqual(np.array(IMG.readN(path, 1)).shape, (6, 256, 256))
+        path = [lenna_path, mandrill_path, lenna_path, uso,
+                mandrill_path, lenna_path, mandrill_path, uso]
+        self.assertEqual(np.array(IMG.readN(path)).shape, (6, 256, 256, 3))
+
     def test_blank(self):
         img = IMG.blank((128, 128, 3), 0)
         self.assertEqual(img.shape, (128, 128, 3))
@@ -42,10 +60,10 @@ class TestImgFunc(unittest.TestCase):
         self.assertEqual(img.shape, (128, 128, 3))
         self.assertEqual(np.sum(img), 0)
         img = IMG.blank((128, 128, 1), -1)
-        self.assertEqual(img.shape, (128, 128, 1))
+        self.assertEqual(img.shape, (128, 128))
         self.assertEqual(np.sum(img), 0)
         img = IMG.blank((128, 128), -1)
-        self.assertEqual(img.shape, (128, 128, 1))
+        self.assertEqual(img.shape, (128, 128))
         self.assertEqual(np.sum(img), 0)
         img = IMG.blank((128, 128, 3), (255, 255, 255))
         self.assertEqual(img.shape, (128, 128, 3))
@@ -120,7 +138,7 @@ class TestImgFunc(unittest.TestCase):
         self.assertEqual(imgs.shape, (128, 32, 32))
         self.assertEqual(split, (8, 8))
 
-    def test_rotateRN(self):
+    def test_rotate(self):
         l = cv2.imread(lenna_path)
         m = cv2.imread(mandrill_path)
         imgs, angle = IMG.rotateRN([l, m], 3)
