@@ -13,7 +13,7 @@ import numpy as np
 [sys.path.append(d) for d in ['./Tools/', '../Tools/'] if os.path.isdir(d)]
 from func import argsPrint, getFilePath
 [sys.path.append(d) for d in ['./Lib/', '../Lib/'] if os.path.isdir(d)]
-import imgfunc as IMG
+import imgfunc as I
 
 
 def command():
@@ -92,15 +92,14 @@ def concat3Images(imgs, start_pos, img_width, ch, rate,
     else:
         imgs = [i[:height, start_pos:end_pos, :] for i in imgs]
 
-    imgs = [IMG.resize(i, rate) for i in imgs]
+    imgs = [I.cnv.resize(i, rate) for i in imgs]
     header_size = (30, int(img_width * rate), 3)
     imgs = [titleInsert(i, t, header_size) for i, t in zip(imgs, text)]
     return stackImages(imgs, thick=1, color=(0, 0, 0))
 
 
 def main(args):
-    ch = IMG.getCh(args.channel)
-    imgs = [cv2.imread(name, ch) for name in args.image]
+    imgs = I.io.readN(args.image, args.channel)
     #text = ['[hitotsume]', '[futatsume]', '[mittsume]']
     img = concat3Images(
         imgs, args.offset, args.img_width, args.channel, args.img_rate

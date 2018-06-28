@@ -11,7 +11,7 @@ import numpy as np
 from glob import glob
 
 import Tools.func as F
-import Tools.imgfunc as IMG
+import Tools.imgfunc as I
 
 
 def command():
@@ -63,7 +63,7 @@ def main(args):
     # 画像データを探索し、画像データのパスと、サブディレクトリの値を格納する
     search = glob(os.path.join(args.img_root_path, '**'), recursive=True)
     data = [(img, str2int(img.split('/')[1])) for img in search
-            if IMG.isImgPath(img, True)]
+            if I.io.isImgPath(img, True)]
     # ラベルの数を数える
     label_num = len(np.unique(np.array([i for _, i in data])))
     print('label num: ', label_num)
