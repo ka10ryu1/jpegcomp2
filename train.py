@@ -164,6 +164,7 @@ def main(args):
     updater = training.StandardUpdater(
         train_iter, optimizer, device=args.gpu_id
     )
+
     trainer = training.Trainer(
         updater, (args.epoch, 'epoch'), out=args.out_path
     )
