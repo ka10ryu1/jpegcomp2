@@ -12,7 +12,7 @@ import numpy as np
 
 [sys.path.append(d) for d in ['./Tools/', '../Tools/'] if os.path.isdir(d)]
 import func as F
-import imgfunc as IMG
+import imgfunc as I
 
 
 def command():
@@ -89,6 +89,9 @@ def stackImgAndShape(imgs, row):
         img_len = len(imgs) // row * row
         imgs = imgs[:img_len]
 
+    if 0 > row:
+        row = 1
+
     return np.array(imgs), np.arange(len(imgs)).reshape(-1, row)
 
 
@@ -105,10 +108,10 @@ def makeBorder(img, top, bottom, left, right, flg, value=None):
 
 def main(args):
     # 画像を読み込む
-    imgs = [cv2.imread(name) for name in args.jpeg if IMG.isImgPath(name)]
+    imgs = I.io.readN(args.jpeg)
     # concatするためにすべての画像の高さを統一する
     h = np.max([img.shape[0] for img in imgs])
-    imgs = [IMG.resize(img, h / img.shape[0]) for img in imgs]
+    imgs = [I.cnv.resize(img, h / img.shape[0]) for img in imgs]
     # concatするためにすべての画像の幅を統一する
     flg = cv2.BORDER_REFLECT_101
     w = np.max([img.shape[1] for img in imgs])
@@ -121,7 +124,7 @@ def main(args):
     imgs, size = stackImgAndShape(imgs, args.row)
     # 画像を連結してリサイズする
     buf = [np.vstack(imgs[s]) for s in size]
-    img = IMG.resize(np.hstack(buf), args.resize)
+    img = I.cnv.resize(np.hstack(buf), args.resize)
     # 連結された画像を保存する
     name = F.getFilePath(args.out_path, 'concat', '.jpg')
     print('save:', name)

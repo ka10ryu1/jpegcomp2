@@ -17,8 +17,8 @@ import numpy as np
 import chainer
 import chainer.links as L
 
-import Tools.imgfunc as IMG
-import Tools.getfunc as GET
+import Tools.imgfunc as I
+import Tools.getfunc as G
 import Tools.func as F
 from predict import encDecWrite, predict
 from Lib.network import JC_DDUU as JC
@@ -86,17 +86,14 @@ def getImage(jpg_path, ch, img_size, img_num, seed):
     [out] 連結された画像（縦長）
     """
 
-    ch_flg = IMG.getCh(ch)
     # 画像を読み込み
-    imgs = [cv2.imread(jpg, ch_flg) for jpg in jpg_path if IMG.isImgPath(jpg)]
+    imgs = I.io.readN(jpg_path, ch)
     # 画像を分割し
-    imgs, size = IMG.splitSQN(imgs, img_size)
-    # ほとんど白い画像を除去し
-    imgs = np.array(IMG.whiteCheckN(imgs))
+    imgs, size = I.cnv.splitSQN(imgs, img_size)
+    # ランダムに取得する
     if(seed >= 0):
         np.random.seed(seed)
 
-    # ランダムに取得する
     shuffle = np.random.permutation(range(len(imgs)))
     return np.vstack(imgs[shuffle[:img_num]])
 
@@ -113,7 +110,7 @@ def stackImages(imgs, rate):
         [cv2.cvtColor(img, cv2.COLOR_GRAY2RGB) if len(img.shape) < 3 else img
          for img in imgs]
     )
-    return IMG.resize(img, rate)
+    return I.cnv.resize(img, rate)
 
 
 def main(args):
@@ -121,9 +118,9 @@ def main(args):
     snapshot_path, param = getSnapshotAndParam(args.snapshot_and_json)
     # jsonファイルから学習モデルのパラメータを取得する
     p = ['unit', 'shape', 'shuffle_rate', 'actfun1', 'actfun2']
-    unit, shape, sr, af1, af2 = GET.jsonData(param, p)
-    af1 = GET.actfun(af1)
-    af2 = GET.actfun(af2)
+    unit, shape, sr, af1, af2 = G.jsonData(param, p)
+    af1 = G.actfun(af1)
+    af2 = G.actfun(af2)
     ch, size = shape[:2]
     # 推論実行するために画像を読み込んで結合する
     img = getImage(args.jpeg, ch, size, args.img_num, args.random_seed)
@@ -156,7 +153,7 @@ def main(args):
         ed = encDecWrite(img, ch, args.quality)
         with chainer.using_config('train', False):
             out_imgs.append(
-                predict(model, IMG.splitSQ(ed, size),
+                predict(model, I.cnv.splitSQ(ed, size),
                         args.batch, ed.shape, sr, args.gpu)
             )
 

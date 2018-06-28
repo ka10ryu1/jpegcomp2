@@ -21,8 +21,8 @@ from chainer.cuda import to_cpu
 
 from Lib.concat_3_images import concat3Images
 from Lib.network import JC_DDUU as JC
-import Tools.imgfunc as IMG
-import Tools.getfunc as GET
+import Tools.imgfunc as I
+import Tools.getfunc as G
 import Tools.func as F
 
 
@@ -59,7 +59,7 @@ def encDecWrite(img, ch, quality, out_path='./result', val=-1):
     """
 
     # 入力画像を圧縮して劣化させる
-    comp = IMG.encodeDecode(img, IMG.getCh(ch), quality)
+    comp = I.cnv.encodeDecode(img, I.io.getCh(ch), quality)
     # 比較のため圧縮画像を保存する
     if(val >= 0):
         path = F.getFilePath(out_path, 'comp-' +
@@ -73,7 +73,7 @@ def predict(model, data, batch, org_shape, rate, gpu):
     """
     推論実行メイン部
     [in]  model:     推論実行に使用するモデル
-    [in]  data:      分割（IMG.split）されたもの
+    [in]  data:      分割（I.cnv.split）されたもの
     [in]  batch:     バッチサイズ
     [in]  org_shape: 分割前のshape
     [in]  rate:      出力画像の拡大率
@@ -87,9 +87,9 @@ def predict(model, data, batch, org_shape, rate, gpu):
     st = time.time()
     # バッチサイズごとに学習済みモデルに入力して画像を生成する
     for i in range(0, len(comp), batch):
-        x = IMG.imgs2arr(comp[i:i + batch], gpu=gpu)
+        x = I.arr.imgs2arr(comp[i:i + batch], gpu=gpu)
         y = model.predictor(x)
-        imgs.extend(IMG.arr2imgs(to_cpu(y.array)))
+        imgs.extend(I.arr.arr2imgs(to_cpu(y.array)))
 
     print('exec time: {0:.2f}[s]'.format(time.time() - st))
     # 生成された画像を分割情報をもとに結合する
@@ -97,18 +97,18 @@ def predict(model, data, batch, org_shape, rate, gpu):
            for i in range(size[1])]
     img = np.hstack(buf)
     # 出力画像は入力画像の2倍の大きさになっているので半分に縮小する
-    img = IMG.resize(img, 1/rate)
+    img = I.cnv.resize(img, 1/rate)
     # 結合しただけでは画像サイズがオリジナルと異なるので切り取る
     # また、画像の明暗をはっきりさせる
-    return IMG.cleary(img[:org_shape[0], :org_shape[1]])
+    return I.cnv.cleary(img[:org_shape[0], :org_shape[1]])
 
 
 def main(args):
     # jsonファイルから学習モデルのパラメータを取得する
     p = ['unit', 'shape', 'shuffle_rate', 'actfun1', 'actfun2']
-    unit, shape, sr, af1, af2 = GET.jsonData(args.param, p)
-    af1 = GET.actfun(af1)
-    af2 = GET.actfun(af2)
+    unit, shape, sr, af1, af2 = G.jsonData(args.param, p)
+    af1 = G.actfun(af1)
+    af2 = G.actfun(af2)
     ch, size = shape[:2]
     # 学習モデルを生成する
     model = L.Classifier(
@@ -132,9 +132,7 @@ def main(args):
     #     model.to_intel64()
 
     # 高圧縮画像の生成
-    ch_flg = IMG.getCh(ch)
-    org_imgs = [cv2.imread(name, ch_flg)
-                for name in args.jpeg if IMG.isImgPath(name)]
+    org_imgs = I.io.readN(args.jpeg, ch)
     ed_imgs = [encDecWrite(img, ch, args.quality, args.out_path, i)
                for i, img in enumerate(org_imgs)]
     imgs = []
@@ -142,7 +140,7 @@ def main(args):
         # 学習モデルを入力画像ごとに実行する
         for i, ei in enumerate(ed_imgs):
             img = predict(
-                model, IMG.splitSQ(ei, size),
+                model, I.cnv.splitSQ(ei, size),
                 args.batch, ei.shape, sr, args.gpu
             )
             # 生成結果を保存する
