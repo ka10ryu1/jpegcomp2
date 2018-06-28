@@ -20,12 +20,21 @@
 
 # 動作環境
 
-- **Ubuntu** 16.04.4 LTS ($ cat /etc/issue)
-- **Python** 3.5.2 ($ python3 -V)
-- **chainer** 4.0.0 ($ pip3 show chainer | grep Ver)
-- **numpy** 1.14.2 ($ pip3 show numpy | grep Ver)
-- **cupy** 4.0.0 ($ pip3 show cupy | grep Ver)
-- **opencv-python** 3.4.0.12 ($ pip3 show opencv-python | grep Ver)
+## $ cat /etc/issue
+
+- **Ubuntu** 16.04.4 LTS
+
+## $ Tools/version_check.py
+
+- **Python** 3.5
+- **pip** 9.0.1
+- **numpy** 1.14.2
+- **opencv-python** 3.4.0.12
+- **chainer** 4.0.0
+- **cupy** 4.0.0
+- **ideep4py** None
+- **matplotlib** 2.2.2
+- **Pillow** 5.1.0
 
 # ファイル構成
 
