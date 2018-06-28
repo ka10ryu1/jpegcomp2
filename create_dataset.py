@@ -18,8 +18,8 @@ import numpy as np
 
 from multiprocessing import Pool
 
-import Tools.imgfunc as IMG
-import Tools.getfunc as GET
+import Tools.imgfunc as I
+import Tools.getfunc as G
 import Tools.func as F
 
 
@@ -44,7 +44,7 @@ def command():
 def create(fonts, img, size):
     for font in fonts:
         # 上辺と左辺の枠を消してフォントを一つ選択する
-        img, _ = IMG.paste(font[1:, 1:, ], img, mask_flg=False)
+        img, _ = I.paste.paste(font[1:, 1:, ], img, mask_flg=False)
 
     return img[size[0]:size[1], size[0]:size[1]]
 
@@ -59,7 +59,7 @@ def createN(pre_fonts, img_size, font_num, img_num, img_buf=20, processes=4):
     #####
 
     # 背景画像を生成する
-    img = IMG.white(img_size + img_buf, img_size + img_buf, 3)
+    img = I.blank.white(img_size + img_buf, img_size + img_buf, 3)
     # img_bufで拡張した背景画像をimg_sizeの幅で切り取るために使用する
     size = (img_buf // 2, img_size + img_buf // 2)
     # 使用するフォントをランダムシャッフルしておく
@@ -82,14 +82,14 @@ def createN(pre_fonts, img_size, font_num, img_num, img_buf=20, processes=4):
 
 def getPath(out_path, i, zfill=4, str_len=12):
     folder = os.path.join(out_path, str(i).zfill(zfill))
-    name = GET.datetimeSHA(GET.randomStr(10), str_len=str_len)
+    name = G.datetimeSHA(G.randomStr(10), str_len=str_len)
     return F.getFilePath(folder, name, '.jpg')
 
 
 def main(args):
     # フォント画像の読み込みと分割する
     print('read and split images...')
-    fonts, _ = IMG.splitSQN(IMG.readN(args.font, 3), args.font_size)
+    fonts, _ = I.cnv.splitSQN(I.io.readN(args.font, 3), args.font_size)
 
     print(fonts.shape)
     param = F.args2dict(args)

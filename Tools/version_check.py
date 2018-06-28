@@ -15,7 +15,7 @@ def main():
 
     import pkg_resources as pkg
     check = ('Python', 'pip', 'numpy', 'opencv-python',
-             'chainer', 'cupy', 'ideep4py', 'matplotlib', 'Pillow')
+             'chainer', 'chainercv', 'cupy', 'ideep4py', 'matplotlib', 'Pillow')
     ver = {dist.project_name: dist.version
            for dist in pkg.working_set if dist.project_name in check}
 

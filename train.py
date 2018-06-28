@@ -24,8 +24,8 @@ from chainer.training import extensions
 from Lib.plot_report_log import PlotReportLog
 from Lib.network import JC_DDUU as JC
 from Lib.read_dataset_CV2 import LabeledImageDataset
-import Tools.imgfunc as IMG
-import Tools.getfunc as GET
+import Tools.imgfunc as I
+import Tools.getfunc as G
 import Tools.func as F
 import Tools.pruning as pruning
 
@@ -48,8 +48,8 @@ class ResizeAndEncdecImgDataset(chainer.dataset.DatasetMixin):
         z, _ = inputs
         z = z.transpose(1, 2, 0).astype(np.uint8)
         z = cv2.cvtColor(z, cv2.COLOR_RGB2GRAY)
-        x = IMG.img2arr(IMG.encodeDecode(z, IMG.getCh(1), self._quality))
-        y = IMG.img2arr(IMG.resize(z, self._rate))
+        x = I.arr.img2arr(I.cnv.encodeDecode(z, I.io.getCh(1), self._quality))
+        y = I.arr.img2arr(I.cnv.resize(z, self._rate))
         return x.astype(self._dtype), y.astype(self._dtype)
 
 
@@ -132,23 +132,23 @@ def getDataset(folder, shuffle_rate):
 
 def main(args):
     # 各種データをユニークな名前で保存するために時刻情報を取得する
-    exec_time = GET.datetimeSHA()
+    exec_time = G.datetimeSHA()
 
     # 活性化関数を取得する
-    actfun1 = GET.actfun(args.actfun1)
-    actfun2 = GET.actfun(args.actfun2)
+    actfun1 = G.actfun(args.actfun1)
+    actfun2 = G.actfun(args.actfun2)
     model = L.Classifier(
         JC(n_unit=args.unit, rate=args.shuffle_rate,
            actfun1=actfun1, actfun2=actfun2, dropout=args.dropout,
            view=args.only_check),
-        lossfun=GET.lossfun(args.lossfun)
+        lossfun=G.lossfun(args.lossfun)
     )
     # Accuracyは今回使用しないのでFalseにする
     # もしも使用したいのであれば、自分でAccuracyを評価する関数を作成する必要あり？
     model.compute_accuracy = False
 
     # Setup an optimizer
-    optimizer = GET.optimizer(args.optimizer).setup(model)
+    optimizer = G.optimizer(args.optimizer).setup(model)
 
     # Load dataset
     train, test, _ = getDataset(args.in_path, args.shuffle_rate)
