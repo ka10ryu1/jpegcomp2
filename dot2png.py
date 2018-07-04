@@ -5,9 +5,15 @@ help = 'dot言語で記述されたファイルをPNG形式に変換する'
 #
 
 import os
-# pydot: 1.2.4
-# graphviz: 0.8.2
-import pydot
+# pip install pydot: 1.2.4
+# sudo apt install graphviz
+try:
+    import pydot
+except:
+    print('$ sudo apt install graphviz')
+    print('$ pip install pydot')
+    exit()
+
 import argparse
 
 from func import argsPrint, getFilePath

@@ -21,22 +21,32 @@ $ tree >& log.txt
 ## ファイル
 
 ```console
+.
 ├── LICENSE
 ├── README.md
 ├── Tests
 │   ├── Lenna.bmp       > テスト用画像
 │   ├── Mandrill.bmp    > テスト用画像
 │   ├── test_getfunc.py > getfuncのテスト用コード
-│   └── test_imgfunc.py > imgfuncのテスト用コード'
+│   └── test_imgfunc.py > imgfuncのテスト用コード
+├── change_handler.py > ファイルの更新を監視する
+├── clean_all.sh
 ├── concat.py         > 複数の画像を任意の行列で結合する
 ├── dot2png.py        > dot言語で記述されたファイルをPNG形式に変換する
 ├── func.py           > 便利機能
 ├── getfunc.py        > 各種パラメータ取得に関する便利機能
-├── imgfunc.py        > 画像処理に関する便利機能
+├── imgfunc
+│   ├── __init__.py
+│   ├── arr.py         > [imgfunc] 行列と画像の変換
+│   ├── blank_img.py   > [imgfunc] 単色画像の生成
+│   ├── convert_img.py > [imgfunc] 画像処理部
+│   ├── paste.py       > [imgfunc] 画像の貼り付け
+│   └── read_write.py  > [imgfunc] 画像のI/O関係
 ├── npz2jpg.py        > 作成したデータセット（.npz）の中身を画像として出力する
 ├── plot_diff.py      > logファイルの複数比較
 ├── png_monitoring.py > 任意のフォルダの監視
-└── pruning.py        > モデルの枝刈をする
+├── pruning.py        > モデルの枝刈をする
+└── version_check.py  > 各ライブラリのバージョンを表示する
 ```
 
 # 使い方
@@ -85,6 +95,15 @@ $ ./png_monitoring.py [監視するフォルダ] [コピー先フォルダ]
 ## モデルの枝刈をする
 
 これ単体では動作しない。学習にスナップショットを利用する際にこれを使うと結果に寄与しにくいパラメータを削除してモデルの容量を削減できる。詳細は[リンク](http://tosaka2.hatenablog.com/entry/2017/11/17/194051)を参照されたい。
+
+## 各ライブラリのバージョンを表示する
+
+READMEやQiitaに各ライブラリのバージョンを残しておきたいことが多々あるので、以下を実行してMarkdown形式で各ライブラリのバージョンを表示する。
+
+```console
+$ ./version_check.py
+```
+
 
 ## テストの実行
 

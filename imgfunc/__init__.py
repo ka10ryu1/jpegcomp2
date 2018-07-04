@@ -9,10 +9,9 @@ import sys
 
 [sys.path.append(d) for d in ['./Tools/imgfunc/',
                               '../Tools/imgfunc/'] if os.path.isdir(d)]
-from read_write import getCh, read, readN, write, isImgPath
-from blank_img import white, black, blank
-from convert_img import cleary, encodeDecode, encodeDecodeN, cut, cutN, splitSQ, splitSQN
-from convert_img import rotate, rotateR, rotateRN, flip, flipR, flipN
-from convert_img import resize, resizeP, resizeN, size2x
-from paste import paste
-from arr import arr2x, arrNx, img2arr, imgs2arr, arr2img, arr2imgs
+
+from . import read_write as io
+from . import blank_img as blank
+from . import convert_img as cnv
+from . import paste
+from . import arr
