@@ -14,6 +14,7 @@ logger = getLogger(__name__)
 [sys.path.append(d) for d in ['./Tools/', '../Tools/'] if os.path.isdir(d)]
 from func import fileFuncLine
 from imgfunc.read_write import getCh
+from imgfunc.blank_img import black
 
 
 def cleary(img, clip_limit=3, grid=(8, 8), thresh=225):
@@ -183,6 +184,49 @@ def splitSQN(imgs, size, round_num=-1, flg=cv2.BORDER_REPLICATE, w_rate=0.2):
         return np.array(out_imgs[:round_len]), (split[0], split[1])
     else:
         return np.array(out_imgs), (split[0], split[1])
+
+
+def vhstack(imgs, vh_size=None, img_size=None):
+    """
+    splitSQ(N)された画像リストを連結する
+    [in]  imgs:     splitSQ(N)された画像リスト
+    [in]  vh_size:  splitSQ(N)時に作成された縦横画像枚数
+    [in]  img_size: 本来の画像サイズ
+    [out] 連結された元サイズの画像
+    """
+
+    if vh_size is None:
+        vh_size = (1, len(imgs))
+
+    if len(vh_size) != 2:
+        vh_size = (1, len(imgs))
+
+    if vh_size[0] != -1 and vh_size[1] == -1:
+        vh_size = (vh_size[0], int(len(imgs)/vh_size[0]+0.5))
+
+    if vh_size[0] == -1 and vh_size[1] != -1:
+        vh_size = (int(len(imgs)/vh_size[1]+0.5), vh_size[1])
+
+    if len(imgs) > vh_size[0]*vh_size[1]:
+        vh_size = (1, len(imgs))
+
+    if len(imgs) < vh_size[0]*vh_size[1]:
+        if len(imgs[0].shape) == 2:
+            w, h = imgs[0].shape
+            ch = 1
+        else:
+            w, h, ch = imgs[0].shape
+
+        for i in range(vh_size[0]*vh_size[1] - len(imgs)):
+            imgs.append(black(w, h, ch))
+
+    buf = [np.vstack(imgs[i * vh_size[0]: (i + 1) * vh_size[0]])
+           for i in range(vh_size[1])]
+
+    if img_size is None:
+        return np.hstack(buf)
+    else:
+        return np.hstack(buf)[:img_size[0], :img_size[1]]
 
 
 def rotate(img, angle, scale, border=(0, 0, 0)):
