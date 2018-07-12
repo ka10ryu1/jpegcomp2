@@ -226,7 +226,7 @@ def vhstack(imgs, vh_size=None, img_size=None):
     if img_size is None:
         return np.hstack(buf)
     else:
-        return np.hstack(buf)[:img_size[0], :img_size[1]]
+        return np.hstack(buf)[: img_size[0], : img_size[1]]
 
 
 def rotate(img, angle, scale, border=(0, 0, 0)):
