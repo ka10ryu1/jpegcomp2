@@ -58,17 +58,20 @@ def readN(path_list, ch=3):
 def write(folder, name, img, ext='.jpg'):
     """
     画像に逐次連番を追加して保存する
-    [in] folder: 保存するフォルダ
-    [in] name:   保存するファイル名
-    [in] img:    保存する画像
-    [in] ext:    拡張子
+    [in]  folder: 保存するフォルダ
+    [in]  name:   保存するファイル名
+    [in]  img:    保存する画像
+    [in]  ext:    拡張子
+    [out] path:   保存するファイルのパス
     """
+
     logger.debug('write({},{},{},{})'.format(folder, name, img.shape, ext))
     write.__dict__.setdefault('count', 0)
     path = getFilePath(folder, name+str(write.count).zfill(4), ext)
     cv2.imwrite(path, img)
     write.count += 1
     logger.debug('\t count: {}'.format(write.count))
+    return path
 
 
 def isImgPath(path, silent=False):
