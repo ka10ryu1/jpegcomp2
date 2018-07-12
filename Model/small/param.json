@@ -1,0 +1,24 @@
+{
+    "actfun1": "relu",
+    "actfun2": "sigmoid",
+    "batchsize": 64,
+    "dropout": 0.3,
+    "epoch": 100,
+    "frequency": -1,
+    "gpu_id": 0,
+    "in_path": "./result/",
+    "lossfun": "mse",
+    "only_check": false,
+    "optimizer": "adam",
+    "out_path": "result/004",
+    "plot": true,
+    "pruning": 0.6,
+    "resume": "result/003/d5f95267_80.snapshot",
+    "shape": [
+        1,
+        128,
+        128
+    ],
+    "shuffle_rate": 4,
+    "unit": 32
+}
