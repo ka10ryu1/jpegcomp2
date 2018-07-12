@@ -14,17 +14,25 @@ logger = getLogger(__name__)
 from func import fileFuncLine
 
 
-def white(w, h, ch):
+def white(w, h=None, ch=None):
     """
     単色（白）を生成する
     """
+
+    if isinstance(w, tuple):
+        return blank(w, 255)
+
     return blank((w, h, ch), 255)
 
 
-def black(w, h, ch):
+def black(w, h=None, ch=None):
     """
     単色（黒）を生成する
     """
+
+    if isinstance(w, tuple):
+        return blank(w, 0)
+
     return blank((w, h, ch), 0)
 
 
